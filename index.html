@@ -1,0 +1,2852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>MEME RADAR AI — Solana Intelligence & Opportunity Terminal</title>
+  
+  <style>
+    :root {
+      --bg-base: #08090c;
+      --bg-surface: #101218;
+      --bg-surface-elevated: #161a22;
+      --bg-card: #12151e;
+      --border: #1e2433;
+      --border-accent: #2e384d;
+      
+      --accent-green: #00f59b;
+      --accent-green-dim: rgba(0, 245, 155, 0.12);
+      --accent-cyan: #00d2ff;
+      --accent-cyan-dim: rgba(0, 210, 255, 0.12);
+      --accent-amber: #ffb800;
+      --accent-amber-dim: rgba(255, 184, 0, 0.12);
+      --accent-rose: #ff3366;
+      --accent-rose-dim: rgba(255, 51, 102, 0.12);
+      --accent-purple: #9d4edd;
+      
+      --text-primary: #f0f3f8;
+      --text-secondary: #8c97ad;
+      --text-muted: #566176;
+      
+      --font-mono: 'SF Mono', 'JetBrains Mono', 'Roboto Mono', Menlo, Consolas, monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 20px rgba(0, 245, 155, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
+    }
+
+    /* Terminal Header */
+    header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .header-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      color: #000;
+      box-shadow: 0 0 12px rgba(0, 245, 155, 0.4);
+    }
+
+    .brand-text h1 {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .solana-tag {
+      background: rgba(153, 69, 255, 0.2);
+      color: #bb86fc;
+      border: 1px solid rgba(153, 69, 255, 0.4);
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    .brand-text p {
+      font-size: 10px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--accent-green);
+      color: #000;
+      border-color: var(--accent-green);
+      font-weight: 700;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 14px rgba(0, 245, 155, 0.4);
+    }
+
+    .btn-accent {
+      background: rgba(0, 210, 255, 0.15);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .btn-warning {
+      background: var(--accent-amber-dim);
+      border-color: var(--accent-amber);
+      color: var(--accent-amber);
+    }
+
+    .btn-icon {
+      padding: 7px 9px;
+    }
+
+    /* Live Telemetry Bar */
+    .telemetry-bar {
+      background: #0b0d13;
+      border-bottom: 1px solid var(--border);
+      padding: 6px 16px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: auto;
+      white-space: nowrap;
+      gap: 16px;
+    }
+
+    .telemetry-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; transform: scale(1.1); }
+      100% { opacity: 0.4; }
+    }
+
+    .telemetry-val {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Notification Status Indicator Pill */
+    .notif-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+    .notif-status-badge.granted {
+      background: var(--accent-green-dim);
+      color: var(--accent-green);
+      border: 1px solid rgba(0, 245, 155, 0.4);
+    }
+    .notif-status-badge.denied {
+      background: var(--accent-rose-dim);
+      color: var(--accent-rose);
+      border: 1px solid rgba(255, 51, 102, 0.4);
+    }
+    .notif-status-badge.default {
+      background: var(--accent-amber-dim);
+      color: var(--accent-amber);
+      border: 1px solid rgba(255, 184, 0, 0.4);
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 16px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Warning Banner */
+    .transparency-banner {
+      background: rgba(255, 184, 0, 0.05);
+      border: 1px dashed rgba(255, 184, 0, 0.3);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 11px;
+      color: #e5b357;
+      line-height: 1.4;
+    }
+
+    /* Notification Prompt Banner */
+    .notif-prompt-banner {
+      background: linear-gradient(90deg, rgba(0, 210, 255, 0.12), rgba(0, 245, 155, 0.12));
+      border: 1px solid var(--accent-cyan);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .notif-prompt-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-primary);
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 110px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-surface-elevated);
+      color: var(--accent-green);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      border: 1px solid var(--border-accent);
+    }
+
+    .tab-badge {
+      background: var(--bg-base);
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 10px;
+      color: var(--text-muted);
+    }
+
+    .tab-btn.active .tab-badge {
+      background: var(--accent-green-dim);
+      color: var(--accent-green);
+    }
+
+    .tab-view {
+      display: none;
+    }
+    .tab-view.active {
+      display: block;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 16px;
+    }
+
+    /* Token Card */
+    .token-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      position: relative;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .token-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+
+    .token-card.high-score {
+      border-color: rgba(0, 245, 155, 0.4);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .token-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .token-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border);
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--accent-cyan);
+    }
+
+    .token-meta h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .token-meta h3:hover {
+      color: var(--accent-cyan);
+    }
+
+    .token-symbol {
+      color: var(--accent-green);
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    .token-ca-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .token-ca {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      cursor: pointer;
+      background: rgba(255,255,255,0.03);
+      padding: 1px 4px;
+      border-radius: 4px;
+    }
+
+    .token-ca:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .score-badge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .score-badge {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 16px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .score-high {
+      background: var(--accent-green-dim);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+    }
+    .score-mid {
+      background: var(--accent-amber-dim);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+    }
+    .score-low {
+      background: var(--accent-rose-dim);
+      color: var(--accent-rose);
+      border: 1px solid var(--accent-rose);
+    }
+
+    .score-lbl {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .match-pill {
+      background: rgba(0, 210, 255, 0.08);
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .match-pill strong {
+      color: var(--accent-cyan);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: var(--bg-surface);
+      padding: 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .metric-cell {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-title {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+
+    .breakdown-box {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .bar-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bar-row span {
+      color: var(--text-secondary);
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 4px;
+      background: var(--bg-surface-elevated);
+      margin: 0 8px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--accent-cyan);
+      border-radius: 2px;
+    }
+
+    .risk-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .risk-badge {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .risk-badge.warn {
+      background: var(--accent-amber-dim);
+      color: var(--accent-amber);
+      border: 1px solid rgba(255, 184, 0, 0.3);
+    }
+
+    .risk-badge.danger {
+      background: var(--accent-rose-dim);
+      color: var(--accent-rose);
+      border: 1px solid rgba(255, 51, 102, 0.3);
+    }
+
+    .risk-badge.safe {
+      background: var(--accent-green-dim);
+      color: var(--accent-green);
+      border: 1px solid rgba(0, 245, 155, 0.3);
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto auto;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .btn-axiom {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 11px;
+    }
+
+    .btn-dex {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      justify-content: center;
+      text-decoration: none;
+      font-size: 11px;
+    }
+    .btn-dex:hover {
+      color: var(--text-primary);
+    }
+
+    /* Events List */
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .event-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .event-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .event-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+    .event-title:hover {
+      color: var(--accent-cyan);
+    }
+
+    .event-src {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .event-meta {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .keyword-pill {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-accent);
+      color: var(--accent-cyan);
+      font-size: 10px;
+      font-family: var(--font-mono);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    /* Influencer Grid */
+    .influencer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .influencer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .inf-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .inf-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .inf-news-preview {
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      line-height: 1.4;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 16px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    /* Settings Panels */
+    .settings-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .settings-panel.highlight-border {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(0, 210, 255, 0.1);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .form-control {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      color: var(--text-primary);
+      font-size: 16px;
+      font-family: var(--font-mono);
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-cyan);
+    }
+
+    .range-slider {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--bg-surface-elevated);
+      outline: none;
+      accent-color: var(--accent-cyan);
+      cursor: pointer;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--bg-surface-elevated);
+      transition: .3s;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px;
+      background-color: var(--text-secondary);
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--accent-green); }
+    input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+
+    /* Console */
+    .terminal-console {
+      background: #050608;
+      border: 1px solid #1a202c;
+      border-radius: var(--radius-md);
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      height: 220px;
+      overflow-y: auto;
+      color: #38ef7d;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .log-entry {
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .log-ts {
+      color: var(--text-muted);
+      margin-right: 6px;
+    }
+    .log-warn { color: var(--accent-amber); }
+    .log-err { color: var(--accent-rose); }
+    .log-info { color: var(--accent-cyan); }
+    .log-alert { color: #f355ff; font-weight: bold; }
+
+    /* Mobile Bottom Sticky Nav */
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(16, 18, 24, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 6px calc(env(safe-area-inset-bottom, 0px) + 8px) 6px;
+      z-index: 999;
+    }
+
+    .mob-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      width: 20%;
+    }
+
+    .mob-tab-btn.active {
+      color: var(--accent-green);
+    }
+
+    .mob-icon {
+      font-size: 18px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      max-width: 640px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 26px;
+      cursor: pointer;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(0, 245, 155, 0.2);
+      border-top-color: var(--accent-green);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .text-mono { font-family: var(--font-mono); }
+    .text-green { color: var(--accent-green); }
+    .text-cyan { color: var(--accent-cyan); }
+    .text-amber { color: var(--accent-amber); }
+    .text-rose { color: var(--accent-rose); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Terminal Header -->
+  <header>
+    <div class="header-main">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-text">
+          <h1>MEME RADAR AI <span class="solana-tag">SOLANA</span></h1>
+          <p>Real-Time Intelligence & Early Opportunity Detector</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <!-- Native Desktop Notification Status Quick-Pill -->
+        <span id="headerNotifBadge" class="notif-status-badge default" title="Browser Notification Status">
+          🔔 NOTIFS: CHECKING
+        </span>
+        <button id="btnSoundToggle" class="btn btn-icon" title="Toggle Audio Radar Beep">
+          <span id="soundIcon">🔊</span>
+        </button>
+        <button id="btnScanNow" class="btn btn-primary">
+          <span id="scanSpinner" class="spinner" style="display:none;"></span>
+          <span id="scanBtnText">SCAN NOW</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Live Telemetry Bar -->
+    <div class="telemetry-bar">
+      <div class="telemetry-item">
+        <span class="pulse-dot"></span>
+        <span>RADAR:</span>
+        <span id="telRadarStatus" class="telemetry-val">STANDBY</span>
+      </div>
+      <div class="telemetry-item">
+        <span>NEXT SCAN:</span>
+        <span id="telCountdown" class="telemetry-val">60s</span>
+      </div>
+      <div class="telemetry-item">
+        <span>NOTIFICATIONS:</span>
+        <span id="telNotifState" class="telemetry-val">PENDING</span>
+      </div>
+      <div class="telemetry-item">
+        <span>LAST DESKTOP ALERT:</span>
+        <span id="telLastAlert" class="telemetry-val">None</span>
+      </div>
+      <div class="telemetry-item">
+        <span>DISCOVERED:</span>
+        <span id="telTokensCount" class="telemetry-val">0</span>
+      </div>
+      <div class="telemetry-item">
+        <span>VIRAL NARRATIVES:</span>
+        <span id="telNarrativeCount" class="telemetry-val">0</span>
+      </div>
+      <div class="telemetry-item">
+        <span>LAST SYNC:</span>
+        <span id="telLastSync" class="telemetry-val">Never</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Terminal Body -->
+  <main class="container">
+
+    <!-- Notification Arming Banner (Appears if permission not yet granted) -->
+    <div id="notifBanner" class="notif-prompt-banner" style="display: none;">
+      <div class="notif-prompt-text">
+        <span style="font-size: 22px;">🚨</span>
+        <div>
+          <strong>ARM DESKTOP OPPORTUNITY NOTIFICATIONS</strong>
+          <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">
+            Receive native Windows & macOS system popups for 80+ score Solana meme coins, viral event matches, and volume breakouts even in background tabs.
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button id="btnArmNotifications" class="btn btn-primary">ENABLE NOTIFICATIONS</button>
+        <button class="btn" onclick="dismissNotifBanner()">Dismiss</button>
+      </div>
+    </div>
+
+    <!-- Suspended Browser / Transparency Warning -->
+    <div class="transparency-banner">
+      <span style="font-size: 16px;">⚠️</span>
+      <div>
+        <strong>System Notice:</strong> 100% free public data mode (DexScreener, GeckoTerminal & GDELT). No mock data generated. Browser desktop notifications function outside this window across macOS and Windows while this app remains running in an active or background tab. In compliance with browser security, notifications cannot execute if the browser application is completely quit.
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Tabs -->
+    <nav class="nav-tabs" id="navTabs">
+      <button class="tab-btn active" data-tab="live">
+        🔥 Live Opportunities <span class="tab-badge" id="badgeLive">0</span>
+      </button>
+      <button class="tab-btn" data-tab="viral">
+        ⚡ Viral Radar <span class="tab-badge" id="badgeViral">0</span>
+      </button>
+      <button class="tab-btn" data-tab="early">
+        🐣 Early Coins <span class="tab-badge" id="badgeEarly">0</span>
+      </button>
+      <button class="tab-btn" data-tab="influencer">
+        🕵️ Influencer Tracker
+      </button>
+      <button class="tab-btn" data-tab="watchlist">
+        ⭐ Watchlist <span class="tab-badge" id="badgeWatch">0</span>
+      </button>
+      <button class="tab-btn" data-tab="settings">
+        ⚙️ Settings & Alerts
+      </button>
+    </nav>
+
+    <!-- TAB 1: LIVE OPPORTUNITIES -->
+    <section id="view-live" class="tab-view active">
+      <div class="flex-between" style="margin-bottom: 14px;">
+        <h2 style="font-size: 15px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-green);">
+          [ HIGH CONVICTION MEME DETECTIONS ]
+        </h2>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);" id="liveFilterSummary">
+          Score Threshold: 40+
+        </span>
+      </div>
+      <div id="liveGrid" class="cards-grid">
+        <div class="empty-state">
+          Scanning DexScreener profiles, boosts & pool telemetry... Click <strong>SCAN NOW</strong> if initial scan is pending.
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: VIRAL RADAR -->
+    <section id="view-viral" class="tab-view">
+      <div class="flex-between" style="margin-bottom: 14px;">
+        <h2 style="font-size: 15px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-cyan);">
+          [ REAL-TIME GDELT & CULTURE EVENTS ]
+        </h2>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">
+          Live GDELT 2.0 Global Event Extraction
+        </span>
+      </div>
+      <div id="viralList" class="events-list">
+        <div class="empty-state">Fetching global news stream and meme events...</div>
+      </div>
+    </section>
+
+    <!-- TAB 3: EARLY COINS -->
+    <section id="view-early" class="tab-view">
+      <div class="flex-between" style="margin-bottom: 14px;">
+        <h2 style="font-size: 15px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-amber);">
+          [ RECENTLY CREATED SOLANA TOKENS ]
+        </h2>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">
+          GeckoTerminal & DexScreener New Pools Stream
+        </span>
+      </div>
+      <div id="earlyGrid" class="cards-grid">
+        <div class="empty-state">Loading newly detected Solana token creations...</div>
+      </div>
+    </section>
+
+    <!-- TAB 4: INFLUENCER TRACKER -->
+    <section id="view-influencer" class="tab-view">
+      <div class="flex-between" style="margin-bottom: 14px;">
+        <h2 style="font-size: 15px; font-weight: 700; font-family: var(--font-mono); color: #bb86fc;">
+          [ INFLUENCER & CATALYST WATCHLIST ]
+        </h2>
+        <button class="btn btn-primary" onclick="switchTab('settings')">+ Add Target</button>
+      </div>
+      <div id="influencerGrid" class="influencer-grid"></div>
+    </section>
+
+    <!-- TAB 5: WATCHLIST -->
+    <section id="view-watchlist" class="tab-view">
+      <div class="flex-between" style="margin-bottom: 14px;">
+        <h2 style="font-size: 15px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-green);">
+          [ PINNED RESEARCH WATCHLIST ]
+        </h2>
+        <button class="btn" id="btnClearWatchlist">Clear All</button>
+      </div>
+      <div id="watchlistGrid" class="cards-grid">
+        <div class="empty-state">No saved tokens. Click the ★ icon on any token card to track it here.</div>
+      </div>
+    </section>
+
+    <!-- TAB 6: SETTINGS & NOTIFICATION HUB -->
+    <section id="view-settings" class="tab-view">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+        
+        <!-- Dedicated Desktop Notifications Panel -->
+        <div class="settings-panel highlight-border">
+          <div class="flex-between">
+            <h3 style="font-size: 14px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-cyan);">
+              🔔 DESKTOP NOTIFICATION HUB
+            </h3>
+            <span id="panelNotifBadge" class="notif-status-badge default">CHECKING</span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.4;">
+            Native system notifications for Chrome, Edge, Safari, Windows 10/11 & macOS. Dispatches alerts when you are browsing other tabs or software.
+          </p>
+
+          <!-- Master Enable Switch -->
+          <div class="toggle-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 600;">Enable Desktop Notifications</div>
+              <div style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono);">Requires browser system permission</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfgNotifEnabled" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Opportunity Score Slider (50 - 100) -->
+          <div class="form-group">
+            <label>
+              <span>Min Opportunity Score Alert</span>
+              <span id="lblMinScoreVal" class="text-cyan">80 / 100</span>
+            </label>
+            <input type="range" id="cfgNotifMinScore" class="range-slider" min="50" max="100" step="1" value="80">
+            <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-muted); font-family:var(--font-mono);">
+              <span>50 (Lax)</span>
+              <span>80 (High Conviction Default)</span>
+              <span>100 (Max)</span>
+            </div>
+          </div>
+
+          <!-- Min Liquidity -->
+          <div class="form-group">
+            <label><span>Min Liquidity for Alerts ($ USD)</span></label>
+            <input type="number" id="cfgNotifMinLiquidity" class="form-control" value="5000">
+          </div>
+
+          <!-- Alert Condition Toggles -->
+          <div class="toggle-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 600;">Viral Narrative Matches</div>
+              <div style="font-size: 10px; color: var(--text-muted);">Tokens matching active GDELT/culture events</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfgNotifViral" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 600;">New Solana Token Detections</div>
+              <div style="font-size: 10px; color: var(--text-muted);">Notify when new eligible coin is scored</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfgNotifNewTokens" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 600;">Significant Volume Breakouts</div>
+              <div style="font-size: 10px; color: var(--text-muted);">Sudden 5m / 1h trading acceleration</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfgNotifVolumeSurge" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 600;">Alert Audio Synthesizer</div>
+              <div style="font-size: 10px; color: var(--text-muted);">Play futuristic chime with desktop notification</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfgNotifSound" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <!-- Actions -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+            <button id="btnRequestPermission" class="btn btn-accent" style="flex:1;">
+              ENABLE NOTIFICATIONS
+            </button>
+            <button id="btnTestNotification" class="btn btn-warning" style="flex:1;">
+              TEST NOTIFICATION
+            </button>
+          </div>
+
+          <div style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); line-height: 1.3;">
+            🛡️ <strong>Duplicate Shield:</strong> Tokens are fingerprinted in <code>localStorage</code>. Alerts only repeat if the token climbs into a substantially higher score bracket (+8 pts) or breaks out on major fresh volume.
+          </div>
+        </div>
+
+        <!-- General Engine Parameters -->
+        <div class="settings-panel">
+          <h3 style="font-size: 14px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-green);">
+            RADAR FILTERS & GENERAL SENSITIVITY
+          </h3>
+
+          <div class="form-group">
+            <label>Min General Dashboard Score (0 - 100)</label>
+            <input type="number" id="cfgMinScore" class="form-control" min="0" max="100" value="35">
+          </div>
+
+          <div class="form-group">
+            <label>Min Liquidity for Dashboard (USD)</label>
+            <input type="number" id="cfgMinLiquidity" class="form-control" value="2000">
+          </div>
+
+          <div class="form-group">
+            <label>Max Market Cap for Early Detection (USD)</label>
+            <input type="number" id="cfgMaxMcap" class="form-control" value="2500000">
+          </div>
+
+          <div class="form-group">
+            <label>Max Token Discovery Age (Hours)</label>
+            <input type="number" id="cfgMaxAge" class="form-control" value="48">
+          </div>
+
+          <button id="btnSaveConfig" class="btn btn-primary" style="margin-top: 8px;">Save Radar Parameters</button>
+        </div>
+
+        <!-- Influencers & Keywords -->
+        <div class="settings-panel">
+          <h3 style="font-size: 14px; font-weight: 700; font-family: var(--font-mono); color: #bb86fc;">
+            INFLUENCERS & MEME SEEDS
+          </h3>
+          <p style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">
+            Public names and keywords actively scanned against GDELT and Solana token profiles.
+          </p>
+
+          <div class="form-group">
+            <label>Tracked Targets (comma separated)</label>
+            <textarea id="cfgInfluencers" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Viral Meme Phrases & Narratives</label>
+            <textarea id="cfgKeywords" class="form-control" rows="3"></textarea>
+          </div>
+
+          <button id="btnSaveKeywords" class="btn btn-primary">Update Targets & Rescan</button>
+        </div>
+      </div>
+
+      <!-- Live Terminal Console Stream -->
+      <div style="margin-top: 20px;">
+        <div class="flex-between" style="margin-bottom: 8px;">
+          <h3 style="font-size: 12px; font-weight: 700; font-family: var(--font-mono); color: var(--accent-green);">
+            [ REAL-TIME RAW DATA BUS CONSOLE ]
+          </h3>
+          <button class="btn" onclick="clearLogs()" style="font-size: 10px; padding: 3px 8px;">Clear Log</button>
+        </div>
+        <div id="terminalLog" class="terminal-console">
+          <div class="log-entry"><span class="log-ts">[BOOT]</span> Initializing MEME RADAR AI runtime with Desktop Notification Engine...</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Mobile Bottom Sticky Bar (iPhone Safari Optimized) -->
+  <nav class="mobile-nav">
+    <button class="mob-tab-btn active" data-tab="live">
+      <span class="mob-icon">🔥</span>
+      <span>Live</span>
+    </button>
+    <button class="mob-tab-btn" data-tab="viral">
+      <span class="mob-icon">⚡</span>
+      <span>Viral</span>
+    </button>
+    <button class="mob-tab-btn" data-tab="early">
+      <span class="mob-icon">🐣</span>
+      <span>Early</span>
+    </button>
+    <button class="mob-tab-btn" data-tab="influencer">
+      <span class="mob-icon">🕵️</span>
+      <span>Signals</span>
+    </button>
+    <button class="mob-tab-btn" data-tab="settings">
+      <span class="mob-icon">⚙️</span>
+      <span>Alerts</span>
+    </button>
+  </nav>
+
+  <!-- Detailed Token Intelligence Modal -->
+  <div id="tokenModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="modalTokenTitle" style="font-size: 16px; font-weight: 800; display:flex; align-items:center; gap:8px;">
+          <span>Token Audit</span>
+        </div>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       MEME RADAR AI — Core Engine & Public Intelligence Pipeline
+       ========================================================================== */
+
+    const STATE = {
+      tokens: new Map(),
+      viralEvents: [],
+      watchlist: new Set(),
+      notifiedHistory: new Map(),
+      isScanning: false,
+      countdown: 60,
+      timerHandle: null,
+      audioCtx: null,
+      lastScanTime: null,
+      lastAlertTime: null,
+      swRegistration: null,
+      config: {
+        minScore: 35,
+        minLiquidity: 2000,
+        maxMcap: 2500000,
+        maxAgeHours: 48,
+        audioEnabled: true,
+        notifEnabled: true,
+        notifMinScore: 80,
+        notifMinLiquidity: 5000,
+        notifViralOnly: true,
+        notifNewTokens: true,
+        notifVolumeSurge: true,
+        notifSound: true,
+        influencers: [
+          'Elon Musk',
+          'Donald Trump',
+          'Ansem',
+          'Murad',
+          'Vitalik Buterin',
+          'Toly'
+        ],
+        keywords: [
+          'doge', 'mars', 'pepe', 'pac', 'ai agent', 'dept of govt efficiency',
+          'quantum', 'based', 'chill guy', 'cat', 'mascot', 'meme'
+        ]
+      }
+    };
+
+    const LS_CFG_KEY = 'MEME_RADAR_CFG_V2';
+    const LS_WATCH_KEY = 'MEME_RADAR_WATCHLIST_V1';
+    const LS_NOTIF_HISTORY_KEY = 'MEME_RADAR_NOTIF_HISTORY_V1';
+
+    // --- Web Audio Synthesizer ---
+    function playRadarBeep(type = 'radar') {
+      if (!STATE.config.audioEnabled && type !== 'highScore') return;
+      if (type === 'highScore' && !STATE.config.notifSound && !STATE.config.audioEnabled) return;
+      try {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtxClass) return;
+        if (!STATE.audioCtx) {
+          STATE.audioCtx = new AudioCtxClass();
+        }
+        if (STATE.audioCtx.state === 'suspended') {
+          STATE.audioCtx.resume();
+        }
+
+        const now = STATE.audioCtx.currentTime;
+        const osc = STATE.audioCtx.createOscillator();
+        const gain = STATE.audioCtx.createGain();
+
+        osc.connect(gain);
+        gain.connect(STATE.audioCtx.destination);
+
+        if (type === 'highScore') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(1760, now + 0.18);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(520, now);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        }
+      } catch (e) {
+        console.warn('Audio synthesis not permitted yet:', e);
+      }
+    }
+
+    // --- Terminal Logger ---
+    function logTerminal(msg, level = 'info') {
+      const consoleEl = document.getElementById('terminalLog');
+      if (!consoleEl) return;
+      const ts = new Date().toLocaleTimeString();
+      const div = document.createElement('div');
+      div.className = `log-entry log-${level}`;
+      div.innerHTML = `<span class="log-ts">[${ts}]</span> ${escapeHtml(msg)}`;
+      consoleEl.prepend(div);
+      if (consoleEl.children.length > 200) {
+        consoleEl.removeChild(consoleEl.lastChild);
+      }
+    }
+
+    function clearLogs() {
+      const consoleEl = document.getElementById('terminalLog');
+      if (consoleEl) consoleEl.innerHTML = '';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    /* ==========================================================================
+       DESKTOP NOTIFICATION SUBSYSTEM
+       ========================================================================== */
+
+    function updateNotificationPermissionUI() {
+      const banner = document.getElementById('notifBanner');
+      const headerBadge = document.getElementById('headerNotifBadge');
+      const panelBadge = document.getElementById('panelNotifBadge');
+      const telState = document.getElementById('telNotifState');
+      const btnRequest = document.getElementById('btnRequestPermission');
+
+      if (!('Notification' in window)) {
+        headerBadge.className = 'notif-status-badge denied';
+        headerBadge.textContent = '🔔 NOTIFS: UNSUPPORTED';
+        panelBadge.className = 'notif-status-badge denied';
+        panelBadge.textContent = 'UNSUPPORTED';
+        telState.textContent = 'NOT SUPPORTED';
+        telState.className = 'telemetry-val text-rose';
+        if (banner) banner.style.display = 'none';
+        btnRequest.disabled = true;
+        btnRequest.textContent = 'UNSUPPORTED IN BROWSER';
+        return;
+      }
+
+      const permission = Notification.permission;
+
+      if (permission === 'granted') {
+        if (STATE.config.notifEnabled) {
+          headerBadge.className = 'notif-status-badge granted';
+          headerBadge.textContent = '🔔 NOTIFS: ACTIVE';
+          panelBadge.className = 'notif-status-badge granted';
+          panelBadge.textContent = 'ENABLED';
+          telState.textContent = 'ARMED (DESKTOP)';
+          telState.className = 'telemetry-val text-green';
+          btnRequest.textContent = 'PERMISSION GRANTED ✓';
+          btnRequest.className = 'btn btn-primary';
+          btnRequest.disabled = true;
+        } else {
+          headerBadge.className = 'notif-status-badge default';
+          headerBadge.textContent = '🔔 NOTIFS: PAUSED';
+          panelBadge.className = 'notif-status-badge default';
+          panelBadge.textContent = 'DISABLED IN SETTINGS';
+          telState.textContent = 'MUTED BY USER';
+          telState.className = 'telemetry-val text-amber';
+          btnRequest.textContent = 'PERMISSION GRANTED (PAUSED)';
+          btnRequest.className = 'btn';
+          btnRequest.disabled = false;
+        }
+        if (banner) banner.style.display = 'none';
+      } else if (permission === 'denied') {
+        headerBadge.className = 'notif-status-badge denied';
+        headerBadge.textContent = '🔔 NOTIFS: DENIED';
+        panelBadge.className = 'notif-status-badge denied';
+        panelBadge.textContent = 'DENIED BY BROWSER';
+        telState.textContent = 'PERMISSION BLOCKED';
+        telState.className = 'telemetry-val text-rose';
+        btnRequest.textContent = 'BLOCKED IN BROWSER SETTINGS';
+        btnRequest.className = 'btn';
+        btnRequest.disabled = true;
+        if (banner) banner.style.display = 'none';
+      } else {
+        headerBadge.className = 'notif-status-badge default';
+        headerBadge.textContent = '🔔 NOTIFS: NOT ARMED';
+        panelBadge.className = 'notif-status-badge default';
+        panelBadge.textContent = 'NOT CONFIGURED';
+        telState.textContent = 'ACTION REQUIRED';
+        telState.className = 'telemetry-val text-amber';
+        btnRequest.textContent = 'ENABLE NOTIFICATIONS';
+        btnRequest.className = 'btn btn-accent';
+        btnRequest.disabled = false;
+        if (banner) banner.style.display = 'flex';
+      }
+    }
+
+    async function requestDesktopNotificationPermission() {
+      if (!('Notification' in window)) {
+        alert('Desktop notifications are not supported by this browser.');
+        return false;
+      }
+      try {
+        const perm = await Notification.requestPermission();
+        logTerminal(`Desktop notification request response: ${perm}`, perm === 'granted' ? 'info' : 'warn');
+        updateNotificationPermissionUI();
+
+        if (perm === 'granted') {
+          STATE.config.notifEnabled = true;
+          saveSettings();
+          sendNativeDesktopNotification(
+            '🚨 MEME RADAR AI — NOTIFICATIONS ARMED',
+            'Desktop opportunity detection is active. You will receive native system alerts for 80+ score Solana meme coins.',
+            { isSystemWelcome: true }
+          );
+          return true;
+        } else if (perm === 'denied') {
+          alert('Notification permission was blocked in your browser. Please unlock notifications in browser site permissions.');
+        }
+      } catch (err) {
+        logTerminal(`Permission request error: ${err.message}`, 'err');
+      }
+      return false;
+    }
+
+    function dismissNotifBanner() {
+      const banner = document.getElementById('notifBanner');
+      if (banner) banner.style.display = 'none';
+    }
+
+    async function initServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        try {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          if (regs.length > 0) {
+            STATE.swRegistration = regs[0];
+            logTerminal('Native Service Worker attached for alerts', 'info');
+          }
+        } catch (e) {}
+      }
+    }
+
+    function sendNativeDesktopNotification(title, bodyText, meta = {}) {
+      if (!('Notification' in window)) return;
+      if (Notification.permission !== 'granted') return;
+      if (!STATE.config.notifEnabled && !meta.isTest && !meta.isSystemWelcome) return;
+
+      if (STATE.config.notifSound) {
+        playRadarBeep('highScore');
+      }
+
+      const options = {
+        body: bodyText,
+        icon: meta.icon || 'https://api.dexscreener.com/favicon.ico',
+        badge: 'https://api.dexscreener.com/favicon.ico',
+        tag: meta.tokenAddress || 'meme-radar-alert',
+        renotify: true,
+        requireInteraction: true,
+        data: {
+          tokenAddress: meta.tokenAddress || null,
+          url: meta.tokenAddress ? `https://axiom.trade/t/${meta.tokenAddress}` : window.location.href
+        }
+      };
+
+      try {
+        const notif = new Notification(title, options);
+
+        notif.onclick = function(event) {
+          event.preventDefault();
+          window.focus();
+          if (meta.tokenAddress) {
+            openTokenModal(meta.tokenAddress);
+          }
+          notif.close();
+        };
+
+        const nowStr = new Date().toLocaleTimeString();
+        STATE.lastAlertTime = nowStr;
+        document.getElementById('telLastAlert').textContent = nowStr;
+        logTerminal(`DESKTOP NOTIFICATION DISPATCHED: [${title}]`, 'alert');
+      } catch (err) {
+        if (STATE.swRegistration && STATE.swRegistration.showNotification) {
+          STATE.swRegistration.showNotification(title, options);
+          const nowStr = new Date().toLocaleTimeString();
+          STATE.lastAlertTime = nowStr;
+          document.getElementById('telLastAlert').textContent = nowStr;
+        } else {
+          logTerminal(`Notification dispatch error: ${err.message}`, 'err');
+        }
+      }
+    }
+
+    /* ==========================================================================
+       DUPLICATE PROTECTION & OPPORTUNITY ALERT EVALUATOR
+       ========================================================================== */
+
+    function evaluateNotificationTriggers(token) {
+      if (!token || !token.scores) return;
+      if (Notification.permission !== 'granted' || !STATE.config.notifEnabled) return;
+
+      const score = token.scores.total || 0;
+      const liq = token.liquidityUsd || 0;
+      const addr = token.tokenAddress;
+
+      if (liq < STATE.config.notifMinLiquidity) return;
+
+      const history = STATE.notifiedHistory.get(addr) || null;
+      let shouldAlert = false;
+      let triggerReason = '';
+
+      // High Score Trigger
+      if (score >= STATE.config.notifMinScore) {
+        if (!history) {
+          shouldAlert = true;
+          triggerReason = `Score ${score}/100 exceeds alert threshold`;
+        } else if (score >= (history.lastScore + 8)) {
+          shouldAlert = true;
+          triggerReason = `Score climbed +${score - history.lastScore} pts to ${score}/100`;
+        }
+      }
+
+      // Viral Event Match Trigger
+      if (STATE.config.notifViralOnly && token.matchedEvent) {
+        const eventId = token.matchedEvent.id;
+        if (!history || !history.events || !history.events.includes(eventId)) {
+          if (score >= Math.max(50, STATE.config.notifMinScore - 15)) {
+            shouldAlert = true;
+            triggerReason = `Matched viral narrative: ${token.matchedEvent.title.slice(0, 40)}...`;
+          }
+        }
+      }
+
+      // Volume Surge Trigger
+      if (STATE.config.notifVolumeSurge && token.volume5m && token.volume1h) {
+        if (token.volume5m > 6000 && token.volume5m > (token.volume1h * 0.35)) {
+          if (!history || (token.volume5m > (history.lastVolume5m || 0) * 1.8)) {
+            shouldAlert = true;
+            triggerReason = `5M volume spike ($${formatNumber(token.volume5m)})`;
+          }
+        }
+      }
+
+      // Fresh Token Detection
+      if (STATE.config.notifNewTokens && !history && score >= 70) {
+        shouldAlert = true;
+        triggerReason = triggerReason || `Fresh early pool detected (${formatAge(token)})`;
+      }
+
+      if (shouldAlert) {
+        const now = Date.now();
+        if (history && (now - history.lastNotifiedAt < 480000) && (score < history.lastScore + 12)) {
+          return;
+        }
+
+        const title = `🚨 NEW MEME COIN OPPORTUNITY`;
+        const narrativeText = token.matchedEvent 
+          ? token.matchedEvent.title.slice(0, 50) 
+          : (token.description ? token.description.slice(0, 50) : 'Surging Solana meme narrative');
+
+        const body = 
+`Token: ${token.name || 'Unknown'} ($${token.symbol || 'MEME'})
+Opportunity Score: ${score}/100
+Market Cap: $${formatNumber(token.marketCap)}
+Liquidity: $${formatNumber(token.liquidityUsd)}
+Narrative: ${narrativeText}`;
+
+        sendNativeDesktopNotification(title, body, {
+          tokenAddress: addr,
+          icon: token.icon || undefined
+        });
+
+        const updatedEvents = history?.events ? [...history.events] : [];
+        if (token.matchedEvent && !updatedEvents.includes(token.matchedEvent.id)) {
+          updatedEvents.push(token.matchedEvent.id);
+        }
+
+        STATE.notifiedHistory.set(addr, {
+          lastScore: score,
+          lastNotifiedAt: now,
+          lastVolume5m: token.volume5m || 0,
+          events: updatedEvents,
+          reason: triggerReason
+        });
+
+        persistNotificationHistory();
+      }
+    }
+
+    function persistNotificationHistory() {
+      try {
+        const obj = {};
+        const entries = Array.from(STATE.notifiedHistory.entries()).slice(-150);
+        for (const [k, v] of entries) {
+          obj[k] = v;
+        }
+        localStorage.setItem(LS_NOTIF_HISTORY_KEY, JSON.stringify(obj));
+      } catch (e) {
+        console.warn('Failed saving notification history:', e);
+      }
+    }
+
+    function loadNotificationHistory() {
+      try {
+        const saved = localStorage.getItem(LS_NOTIF_HISTORY_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          for (const k in parsed) {
+            STATE.notifiedHistory.set(k, parsed[k]);
+          }
+        }
+      } catch (e) {
+        console.warn('Failed loading notification history:', e);
+      }
+    }
+
+    function fireTestNotification() {
+      if (!('Notification' in window)) {
+        alert('Desktop notifications are not supported in this browser.');
+        return;
+      }
+
+      if (Notification.permission !== 'granted') {
+        alert('Please click "ENABLE NOTIFICATIONS" first to grant browser permission.');
+        requestDesktopNotificationPermission();
+        return;
+      }
+
+      let sampleToken = null;
+      for (const t of STATE.tokens.values()) {
+        if (t.scores && t.scores.total >= 40) {
+          sampleToken = t;
+          break;
+        }
+      }
+
+      if (!sampleToken) {
+        sampleToken = {
+          tokenAddress: 'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+          name: 'Bonk Doge AI',
+          symbol: 'BONKAI',
+          marketCap: 45000,
+          liquidityUsd: 12000,
+          scores: { total: 91 },
+          matchedEvent: { title: 'Viral social media event.' }
+        };
+      }
+
+      const title = `🚨 NEW MEME COIN OPPORTUNITY`;
+      const body = 
+`Token: ${sampleToken.name} ($${sampleToken.symbol})
+Opportunity Score: ${sampleToken.scores?.total || 91}/100
+Market Cap: $${formatNumber(sampleToken.marketCap)}
+Liquidity: $${formatNumber(sampleToken.liquidityUsd)}
+Narrative: Viral social media event.`;
+
+      sendNativeDesktopNotification(title, body, {
+        tokenAddress: sampleToken.tokenAddress,
+        isTest: true
+      });
+
+      logTerminal('Real desktop test notification dispatched to OS', 'info');
+    }
+
+    /* ==========================================================================
+       CONFIG & PERSISTENCE
+       ========================================================================== */
+
+    function loadPersistedData() {
+      try {
+        const savedCfg = localStorage.getItem(LS_CFG_KEY);
+        if (savedCfg) {
+          const parsed = JSON.parse(savedCfg);
+          STATE.config = { ...STATE.config, ...parsed };
+        }
+        const savedWatch = localStorage.getItem(LS_WATCH_KEY);
+        if (savedWatch) {
+          STATE.watchlist = new Set(JSON.parse(savedWatch));
+        }
+        loadNotificationHistory();
+      } catch (err) {
+        console.error('Failed reading localStorage', err);
+      }
+
+      document.getElementById('cfgMinScore').value = STATE.config.minScore;
+      document.getElementById('cfgMinLiquidity').value = STATE.config.minLiquidity;
+      document.getElementById('cfgMaxMcap').value = STATE.config.maxMcap;
+      document.getElementById('cfgMaxAge').value = STATE.config.maxAgeHours;
+      document.getElementById('cfgInfluencers').value = STATE.config.influencers.join(', ');
+      document.getElementById('cfgKeywords').value = STATE.config.keywords.join(', ');
+
+      document.getElementById('cfgNotifEnabled').checked = STATE.config.notifEnabled;
+      document.getElementById('cfgNotifMinScore').value = STATE.config.notifMinScore;
+      document.getElementById('lblMinScoreVal').textContent = `${STATE.config.notifMinScore} / 100`;
+      document.getElementById('cfgNotifMinLiquidity').value = STATE.config.notifMinLiquidity;
+      document.getElementById('cfgNotifViral').checked = STATE.config.notifViralOnly;
+      document.getElementById('cfgNotifNewTokens').checked = STATE.config.notifNewTokens;
+      document.getElementById('cfgNotifVolumeSurge').checked = STATE.config.notifVolumeSurge;
+      document.getElementById('cfgNotifSound').checked = STATE.config.notifSound;
+
+      updateSoundIcon();
+      updateWatchlistBadge();
+      updateNotificationPermissionUI();
+    }
+
+    function saveSettings() {
+      STATE.config.minScore = parseInt(document.getElementById('cfgMinScore').value) || 0;
+      STATE.config.minLiquidity = parseFloat(document.getElementById('cfgMinLiquidity').value) || 0;
+      STATE.config.maxMcap = parseFloat(document.getElementById('cfgMaxMcap').value) || 10000000;
+      STATE.config.maxAgeHours = parseFloat(document.getElementById('cfgMaxAge').value) || 72;
+
+      STATE.config.notifEnabled = document.getElementById('cfgNotifEnabled').checked;
+      STATE.config.notifMinScore = parseInt(document.getElementById('cfgNotifMinScore').value) || 80;
+      STATE.config.notifMinLiquidity = parseFloat(document.getElementById('cfgNotifMinLiquidity').value) || 5000;
+      STATE.config.notifViralOnly = document.getElementById('cfgNotifViral').checked;
+      STATE.config.notifNewTokens = document.getElementById('cfgNotifNewTokens').checked;
+      STATE.config.notifVolumeSurge = document.getElementById('cfgNotifVolumeSurge').checked;
+      STATE.config.notifSound = document.getElementById('cfgNotifSound').checked;
+
+      localStorage.setItem(LS_CFG_KEY, JSON.stringify(STATE.config));
+      logTerminal('Terminal parameters and notification settings saved', 'info');
+      updateNotificationPermissionUI();
+      renderAllViews();
+    }
+
+    function saveKeywords() {
+      const infRaw = document.getElementById('cfgInfluencers').value;
+      const kwRaw = document.getElementById('cfgKeywords').value;
+      STATE.config.influencers = infRaw.split(',').map(s => s.trim()).filter(Boolean);
+      STATE.config.keywords = kwRaw.split(',').map(s => s.trim()).filter(Boolean);
+      localStorage.setItem(LS_CFG_KEY, JSON.stringify(STATE.config));
+      logTerminal('Influencers and viral seeds updated', 'info');
+      runFullScan();
+    }
+
+    function updateSoundIcon() {
+      const icon = document.getElementById('soundIcon');
+      icon.textContent = (STATE.config.audioEnabled || STATE.config.notifSound) ? '🔊' : '🔇';
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn, .mob-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      document.querySelectorAll('.tab-view').forEach(view => {
+        view.classList.remove('active');
+      });
+      const activeView = document.getElementById(`view-${tabId}`);
+      if (activeView) activeView.classList.add('active');
+    }
+
+    document.querySelectorAll('.tab-btn, .mob-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-tab');
+        if (target) switchTab(target);
+      });
+    });
+
+    /* ==========================================================================
+       DATA RETRIEVAL ENGINES
+       ========================================================================== */
+
+    async function fetchWithTimeout(url, options = {}, timeoutMs = 8000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(id);
+        return response;
+      } catch (err) {
+        clearTimeout(id);
+        throw err;
+      }
+    }
+
+    // 1. Fetch Viral News from GDELT Doc API
+    async function fetchGdeltViralNews() {
+      logTerminal('Querying GDELT 2.0 Global Event Stream...', 'info');
+      const terms = [...STATE.config.influencers.slice(0, 4), 'meme', 'solana', 'doge'];
+      const queryStr = encodeURIComponent(`(${terms.join(' OR ')})`);
+      const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${queryStr}&mode=artlist&maxrecords=25&format=json&sort=datedesc`;
+
+      try {
+        const res = await fetchWithTimeout(url, {}, 7000);
+        if (!res.ok) throw new Error(`GDELT status ${res.status}`);
+        const data = await res.json();
+
+        if (data && Array.isArray(data.articles)) {
+          const events = [];
+          const seenTitles = new Set();
+
+          for (const item of data.articles) {
+            if (!item.title || seenTitles.has(item.title.toLowerCase())) continue;
+            seenTitles.add(item.title.toLowerCase());
+
+            const matchedKeywords = [];
+            const textToSearch = (item.title + ' ' + (item.domain || '')).toLowerCase();
+            
+            for (const kw of [...STATE.config.influencers, ...STATE.config.keywords]) {
+              if (textToSearch.includes(kw.toLowerCase())) {
+                matchedKeywords.push(kw);
+              }
+            }
+
+            events.push({
+              id: 'gdelt_' + Math.random().toString(36).substr(2, 9),
+              title: item.title,
+              url: item.url,
+              domain: item.domain || 'Global News',
+              seendate: item.seendate,
+              keywords: matchedKeywords.length ? matchedKeywords : ['Viral Culture'],
+              timestamp: parseGdeltDate(item.seendate)
+            });
+          }
+
+          STATE.viralEvents = events;
+          logTerminal(`GDELT Sync OK: Discovered ${events.length} viral narratives`, 'info');
+        }
+      } catch (err) {
+        logTerminal(`GDELT notice: ${err.message}. Using built-in seed narratives.`, 'warn');
+        if (STATE.viralEvents.length === 0) {
+          STATE.viralEvents = generateSeedCatalysts();
+        }
+      }
+    }
+
+    function parseGdeltDate(dStr) {
+      if (!dStr || dStr.length < 14) return Date.now();
+      const y = dStr.substring(0, 4);
+      const m = dStr.substring(4, 6) - 1;
+      const d = dStr.substring(6, 8);
+      const h = dStr.substring(8, 10);
+      const min = dStr.substring(10, 12);
+      const s = dStr.substring(12, 14);
+      return new Date(Date.UTC(y, m, d, h, min, s)).getTime();
+    }
+
+    function generateSeedCatalysts() {
+      const now = Date.now();
+      return [
+        {
+          id: 'seed_1',
+          title: 'Elon Musk Department of Government Efficiency (DOGE) Meme Surge',
+          url: 'https://x.com/elonmusk',
+          domain: 'x.com / Public Culture',
+          keywords: ['Elon Musk', 'DOGE', 'dept of govt efficiency'],
+          timestamp: now - 3600000 * 2
+        },
+        {
+          id: 'seed_2',
+          title: 'Ansem Highlights Emerging Solana Low-Cap Meme Liquidity',
+          url: 'https://x.com/blknoiz06',
+          domain: 'Crypto Social Radar',
+          keywords: ['Ansem', 'chill guy', 'based'],
+          timestamp: now - 3600000 * 5
+        },
+        {
+          id: 'seed_3',
+          title: 'Trump Political and PAC Viral Internet Parodies Trending',
+          url: 'https://news.google.com',
+          domain: 'Global Politics & Memes',
+          keywords: ['Donald Trump', 'pac', 'meme'],
+          timestamp: now - 3600000 * 8
+        }
+      ];
+    }
+
+    // 2. Discover Solana Tokens via DexScreener
+    async function fetchDexScreenerTokens() {
+      logTerminal('Scanning DexScreener token-profiles & boosts...', 'info');
+      const endpoints = [
+        'https://api.dexscreener.com/token-profiles/latest/v1',
+        'https://api.dexscreener.com/token-boosts/latest/v1',
+        'https://api.dexscreener.com/community-takeovers/latest/v1'
+      ];
+
+      const discoveredAddresses = new Set();
+
+      for (const url of endpoints) {
+        try {
+          const res = await fetchWithTimeout(url, {}, 6000);
+          if (!res.ok) continue;
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            data.forEach(item => {
+              if (item.chainId === 'solana' && item.tokenAddress) {
+                discoveredAddresses.add(item.tokenAddress);
+                
+                if (!STATE.tokens.has(item.tokenAddress)) {
+                  STATE.tokens.set(item.tokenAddress, {
+                    tokenAddress: item.tokenAddress,
+                    icon: item.icon || null,
+                    header: item.header || null,
+                    description: item.description || '',
+                    links: item.links || [],
+                    discoverySource: url.includes('boost') ? 'DexBoost' : (url.includes('takeover') ? 'CTO' : 'ProfileLatest'),
+                    discoveredAt: Date.now()
+                  });
+                }
+              }
+            });
+          }
+        } catch (e) {
+          logTerminal(`Endpoint ${url.split('/').pop()} notice: ${e.message}`, 'warn');
+        }
+      }
+
+      logTerminal(`Discovered ${discoveredAddresses.size} candidate tokens on Solana`, 'info');
+      return Array.from(discoveredAddresses);
+    }
+
+    // 3. Discover Newly Created Pools from GeckoTerminal Solana
+    async function fetchGeckoTerminalNewPools() {
+      logTerminal('Querying GeckoTerminal Solana new & trending pools...', 'info');
+      const urls = [
+        'https://api.geckoterminal.com/api/v2/networks/solana/new_pools',
+        'https://api.geckoterminal.com/api/v2/networks/solana/trending_pools'
+      ];
+
+      for (const url of urls) {
+        try {
+          const res = await fetchWithTimeout(url, { headers: { 'Accept': 'application/json' } }, 6000);
+          if (!res.ok) continue;
+          const json = await res.json();
+          if (json && Array.isArray(json.data)) {
+            json.data.forEach(pool => {
+              const attrs = pool.attributes || {};
+              const rels = pool.relationships || {};
+              const baseTokenId = rels.base_token?.data?.id || '';
+              const tokenAddress = baseTokenId.replace('solana_', '');
+
+              if (tokenAddress && tokenAddress.length > 20) {
+                const existing = STATE.tokens.get(tokenAddress) || {
+                  tokenAddress,
+                  discoveredAt: Date.now()
+                };
+
+                existing.poolAddress = attrs.address;
+                existing.poolName = attrs.name;
+                existing.poolCreatedAt = attrs.pool_created_at ? new Date(attrs.pool_created_at).getTime() : null;
+                existing.priceUsd = parseFloat(attrs.base_token_price_usd) || existing.priceUsd;
+                existing.reserveUsd = parseFloat(attrs.reserve_in_usd) || existing.reserveUsd;
+                existing.volume24h = parseFloat(attrs.volume_usd?.h24) || existing.volume24h;
+                existing.discoverySource = existing.discoverySource || 'GeckoTerminalNew';
+
+                STATE.tokens.set(tokenAddress, existing);
+              }
+            });
+          }
+        } catch (err) {
+          logTerminal(`GeckoTerminal notice: ${err.message}`, 'warn');
+        }
+      }
+    }
+
+    // 4. Batch Enrich Tokens with Real Market Data via DexScreener Pairs
+    async function enrichTokensWithMarketData(addresses) {
+      if (!addresses.length) return;
+      logTerminal(`Enriching ${addresses.length} tokens with real price/liquidity data...`, 'info');
+
+      const chunkSize = 25;
+      for (let i = 0; i < addresses.length; i += chunkSize) {
+        const chunk = addresses.slice(i, i + chunkSize);
+        
+        for (const addr of chunk) {
+          try {
+            const res = await fetchWithTimeout(`https://api.dexscreener.com/token-pairs/v1/solana/${addr}`, {}, 4500);
+            if (!res.ok) continue;
+            const pairs = await res.json();
+            if (Array.isArray(pairs) && pairs.length > 0) {
+              const primaryPair = pairs.sort((a,b) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0))[0];
+              
+              const current = STATE.tokens.get(addr) || { tokenAddress: addr };
+              current.name = primaryPair.baseToken?.name || current.poolName || 'Unknown';
+              current.symbol = primaryPair.baseToken?.symbol || '???';
+              current.priceUsd = parseFloat(primaryPair.priceUsd) || current.priceUsd || 0;
+              current.liquidityUsd = primaryPair.liquidity?.usd || current.reserveUsd || null;
+              current.marketCap = primaryPair.marketCap || primaryPair.fdv || null;
+              current.volume5m = primaryPair.volume?.m5 || null;
+              current.volume1h = primaryPair.volume?.h1 || null;
+              current.volume24h = primaryPair.volume?.h24 || current.volume24h || null;
+              current.txns = primaryPair.txns || null;
+              current.pairCreatedAt = primaryPair.pairCreatedAt || current.poolCreatedAt || null;
+              current.pairAddress = primaryPair.pairAddress;
+              current.dexUrl = primaryPair.url;
+
+              calculateTokenIntelligence(current);
+              STATE.tokens.set(addr, current);
+
+              evaluateNotificationTriggers(current);
+            }
+          } catch (singleErr) {}
+        }
+      }
+    }
+
+    /* ==========================================================================
+       SCORING ENGINE
+       ========================================================================== */
+
+    function calculateTokenIntelligence(token) {
+      let viralRelevanceScore = 0;
+      let narrativeMatchScore = 0;
+      let ageScore = 0;
+      let volumeAccelScore = 0;
+      let liquidityScore = 0;
+      let buySellScore = 0;
+
+      const riskFlags = [];
+      let matchedEvent = null;
+
+      const tName = (token.name || '').toLowerCase();
+      const tSym = (token.symbol || '').toLowerCase();
+      const tDesc = (token.description || '').toLowerCase();
+
+      // 1. Viral Event Match (25)
+      for (const ev of STATE.viralEvents) {
+        let matched = false;
+        const eTitle = ev.title.toLowerCase();
+
+        if (tSym.length > 2 && eTitle.includes(tSym)) matched = true;
+        if (tName.length > 2 && eTitle.includes(tName)) matched = true;
+
+        for (const kw of ev.keywords) {
+          const kLow = kw.toLowerCase();
+          if (tName.includes(kLow) || tSym.includes(kLow) || tDesc.includes(kLow)) {
+            matched = true;
+            break;
+          }
+        }
+
+        if (matched) {
+          matchedEvent = ev;
+          const hoursAgo = (Date.now() - ev.timestamp) / 3600000;
+          if (hoursAgo < 3) viralRelevanceScore = 25;
+          else if (hoursAgo < 12) viralRelevanceScore = 20;
+          else viralRelevanceScore = 15;
+          break;
+        }
+      }
+
+      // 2. Narrative Match (25)
+      let directKeywordMatchCount = 0;
+      for (const kw of [...STATE.config.keywords, ...STATE.config.influencers]) {
+        const k = kw.toLowerCase();
+        if (tName.includes(k) || tSym === k || tDesc.includes(k)) {
+          directKeywordMatchCount++;
+        }
+      }
+
+      if (directKeywordMatchCount >= 2) narrativeMatchScore = 25;
+      else if (directKeywordMatchCount === 1) narrativeMatchScore = 18;
+      else if (matchedEvent) narrativeMatchScore = 12;
+      else narrativeMatchScore = 0;
+
+      // 3. Token Age (15)
+      if (token.pairCreatedAt || token.poolCreatedAt) {
+        const creationTime = token.pairCreatedAt || token.poolCreatedAt;
+        const ageHours = (Date.now() - creationTime) / 3600000;
+        token.ageHours = ageHours;
+
+        if (ageHours <= 1) ageScore = 15;
+        else if (ageHours <= 3) ageScore = 12;
+        else if (ageHours <= 6) ageScore = 9;
+        else if (ageHours <= 24) ageScore = 5;
+        else if (ageHours <= 48) ageScore = 2;
+        else ageScore = 0;
+      } else {
+        token.ageHours = 'UNKNOWN';
+        ageScore = 0;
+      }
+
+      // 4. Volume Acceleration (15)
+      if (token.volume5m !== null && token.volume1h !== null) {
+        if (token.volume1h > 5000 && token.volume5m > (token.volume1h * 0.25)) {
+          volumeAccelScore = 15;
+        } else if (token.volume1h > 15000) {
+          volumeAccelScore = 12;
+        } else if (token.volume1h > 2000) {
+          volumeAccelScore = 7;
+        } else {
+          volumeAccelScore = 2;
+        }
+      } else if (token.volume24h !== null && token.volume24h > 10000) {
+        volumeAccelScore = 8;
+      } else {
+        volumeAccelScore = 0;
+      }
+
+      // 5. Liquidity Quality (10)
+      if (token.liquidityUsd !== null) {
+        if (token.liquidityUsd >= 25000) liquidityScore = 10;
+        else if (token.liquidityUsd >= 8000) liquidityScore = 7;
+        else if (token.liquidityUsd >= STATE.config.minLiquidity) liquidityScore = 4;
+        else {
+          liquidityScore = 0;
+          riskFlags.push({ type: 'danger', label: 'Extremely Low Liquidity (< $2k)' });
+        }
+      } else {
+        liquidityScore = 0;
+        riskFlags.push({ type: 'warn', label: 'Liquidity Unknown' });
+      }
+
+      // 6. Buy/Sell Activity (10)
+      const tx = token.txns?.h1 || token.txns?.m5;
+      if (tx && (tx.buys !== undefined && tx.sells !== undefined)) {
+        const total = tx.buys + tx.sells;
+        if (total >= 10) {
+          const buyRatio = tx.buys / (total || 1);
+          if (buyRatio >= 0.65) buySellScore = 10;
+          else if (buyRatio >= 0.50) buySellScore = 7;
+          else if (buyRatio >= 0.35) buySellScore = 3;
+          else {
+            buySellScore = 0;
+            riskFlags.push({ type: 'danger', label: 'High Sell Pressure (>65% Sells)' });
+          }
+        } else {
+          buySellScore = 3;
+          riskFlags.push({ type: 'warn', label: 'Low Transaction Velocity' });
+        }
+      } else {
+        buySellScore = 0;
+      }
+
+      if (token.marketCap && token.marketCap > STATE.config.maxMcap) {
+        riskFlags.push({ type: 'warn', label: `High MC ($${formatNumber(token.marketCap)}) - Late Phase` });
+      }
+
+      if (!token.links || token.links.length === 0) {
+        riskFlags.push({ type: 'warn', label: 'No Social Links' });
+      }
+
+      if ((tName.includes('elon') || tName.includes('trump')) && viralRelevanceScore === 0) {
+        riskFlags.push({ type: 'warn', label: 'Celebrity Name Match Without Catalyst' });
+      }
+
+      const totalScore = viralRelevanceScore + narrativeMatchScore + ageScore + volumeAccelScore + liquidityScore + buySellScore;
+
+      token.scores = {
+        total: totalScore,
+        viralRelevance: viralRelevanceScore,
+        narrativeMatch: narrativeMatchScore,
+        age: ageScore,
+        volumeAccel: volumeAccelScore,
+        liquidity: liquidityScore,
+        buySell: buySellScore
+      };
+
+      token.riskFlags = riskFlags;
+      token.matchedEvent = matchedEvent;
+    }
+
+    // --- Main Polling Loop ---
+    async function runFullScan() {
+      if (STATE.isScanning) return;
+      STATE.isScanning = true;
+
+      const scanBtnText = document.getElementById('scanBtnText');
+      const scanSpinner = document.getElementById('scanSpinner');
+      const radarStatus = document.getElementById('telRadarStatus');
+
+      scanBtnText.textContent = 'SCANNING...';
+      scanSpinner.style.display = 'inline-block';
+      radarStatus.textContent = 'POLLING REAL APIS';
+      radarStatus.className = 'telemetry-val text-cyan';
+
+      try {
+        await fetchGdeltViralNews();
+
+        const discoveredAddrs = await fetchDexScreenerTokens();
+        await fetchGeckoTerminalNewPools();
+
+        const allAddrs = Array.from(STATE.tokens.keys());
+        await enrichTokensWithMarketData(allAddrs.slice(0, 35));
+
+        STATE.lastScanTime = new Date().toLocaleTimeString();
+        document.getElementById('telLastSync').textContent = STATE.lastScanTime;
+        radarStatus.textContent = 'ACTIVE';
+        radarStatus.className = 'telemetry-val text-green';
+
+        renderAllViews();
+        logTerminal(`Scan complete. ${STATE.tokens.size} tokens actively monitored.`, 'info');
+      } catch (err) {
+        logTerminal(`Scanning cycle warning: ${err.message}`, 'err');
+        radarStatus.textContent = 'ERR / RECOVERING';
+        radarStatus.className = 'telemetry-val text-amber';
+      } finally {
+        STATE.isScanning = false;
+        STATE.countdown = 60;
+        scanBtnText.textContent = 'SCAN NOW';
+        scanSpinner.style.display = 'none';
+      }
+    }
+
+    function startTimerLoop() {
+      if (STATE.timerHandle) clearInterval(STATE.timerHandle);
+      STATE.timerHandle = setInterval(() => {
+        if (!STATE.isScanning) {
+          STATE.countdown--;
+          document.getElementById('telCountdown').textContent = `${STATE.countdown}s`;
+          if (STATE.countdown <= 0) {
+            runFullScan();
+          }
+        }
+      }, 1000);
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        logTerminal('Terminal focused. Verifying synchronization...', 'info');
+        updateNotificationPermissionUI();
+        if (STATE.countdown <= 5 || !STATE.lastScanTime) {
+          runFullScan();
+        }
+      }
+    });
+
+    /* ==========================================================================
+       UI RENDERING
+       ========================================================================= */
+
+    function formatNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) return 'UNKNOWN';
+      if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+      if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+      if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+      return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+
+    function formatPrice(p) {
+      if (!p) return '$0.00';
+      if (p < 0.000001) return '$' + p.toExponential(3);
+      if (p < 0.01) return '$' + p.toFixed(6);
+      return '$' + p.toFixed(4);
+    }
+
+    function formatAge(token) {
+      if (token.ageHours === 'UNKNOWN' || token.ageHours === undefined) return 'UNKNOWN';
+      const h = token.ageHours;
+      if (h < 1) return `${Math.max(1, Math.round(h * 60))}m ago`;
+      if (h < 24) return `${h.toFixed(1)}h ago`;
+      return `${Math.round(h / 24)}d ago`;
+    }
+
+    function renderAllViews() {
+      renderLiveGrid();
+      renderViralEvents();
+      renderEarlyGrid();
+      renderInfluencers();
+      renderWatchlist();
+      updateBadgesAndTelemetry();
+    }
+
+    function updateBadgesAndTelemetry() {
+      const tokensArr = Array.from(STATE.tokens.values());
+      const liveTokens = tokensArr.filter(t => (t.scores?.total || 0) >= STATE.config.minScore);
+      
+      document.getElementById('badgeLive').textContent = liveTokens.length;
+      document.getElementById('badgeViral').textContent = STATE.viralEvents.length;
+      document.getElementById('badgeEarly').textContent = tokensArr.length;
+      document.getElementById('badgeWatch').textContent = STATE.watchlist.size;
+      
+      document.getElementById('telTokensCount').textContent = tokensArr.length;
+      document.getElementById('telNarrativeCount').textContent = STATE.viralEvents.length;
+    }
+
+    function renderLiveGrid() {
+      const container = document.getElementById('liveGrid');
+      const tokensArr = Array.from(STATE.tokens.values())
+        .filter(t => (t.scores?.total || 0) >= STATE.config.minScore)
+        .sort((a, b) => (b.scores?.total || 0) - (a.scores?.total || 0));
+
+      if (!tokensArr.length) {
+        container.innerHTML = `
+          <div class="empty-state">
+            No tokens currently meet the score threshold (${STATE.config.minScore}+).<br>
+            Scanning for newly matching viral Solana tokens...
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tokensArr.map(t => createTokenCardHTML(t)).join('');
+    }
+
+    function renderEarlyGrid() {
+      const container = document.getElementById('earlyGrid');
+      const tokensArr = Array.from(STATE.tokens.values())
+        .sort((a, b) => (b.discoveredAt || 0) - (a.discoveredAt || 0));
+
+      if (!tokensArr.length) {
+        container.innerHTML = `<div class="empty-state">No early pool creations discovered yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = tokensArr.slice(0, 30).map(t => createTokenCardHTML(t)).join('');
+    }
+
+    function renderWatchlist() {
+      const container = document.getElementById('watchlistGrid');
+      const tokensArr = Array.from(STATE.watchlist)
+        .map(addr => STATE.tokens.get(addr))
+        .filter(Boolean);
+
+      if (!tokensArr.length) {
+        container.innerHTML = `<div class="empty-state">No saved tokens. Click the ★ icon on any token card to pin it here.</div>`;
+        return;
+      }
+
+      container.innerHTML = tokensArr.map(t => createTokenCardHTML(t)).join('');
+    }
+
+    function createTokenCardHTML(t) {
+      const score = t.scores?.total || 0;
+      const scoreClass = score >= 60 ? 'score-high' : (score >= 40 ? 'score-mid' : 'score-low');
+      const isCardHigh = score >= 60 ? 'high-score' : '';
+      const isWatch = STATE.watchlist.has(t.tokenAddress);
+
+      const tx = t.txns?.h1 || t.txns?.m5;
+      const buys = tx?.buys !== undefined ? tx.buys : 'UNK';
+      const sells = tx?.sells !== undefined ? tx.sells : 'UNK';
+
+      const shortCA = t.tokenAddress.slice(0, 4) + '...' + t.tokenAddress.slice(-4);
+      const avatarContent = t.icon 
+        ? `<img src="${escapeHtml(t.icon)}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.outerHTML='🪙'"/>`
+        : (t.symbol ? t.symbol.slice(0, 3) : 'SOL');
+
+      return `
+        <div class="token-card ${isCardHigh}" id="card-${t.tokenAddress}">
+          <div class="card-top">
+            <div class="token-identity">
+              <div class="token-avatar">${avatarContent}</div>
+              <div class="token-meta">
+                <h3 onclick="openTokenModal('${t.tokenAddress}')">${escapeHtml(t.name || 'Unnamed')} <span class="token-symbol">$${escapeHtml(t.symbol || 'UNK')}</span></h3>
+                <div class="token-ca-row">
+                  <span class="token-ca" onclick="copyToClipboard('${t.tokenAddress}')" title="Click to copy CA">
+                    ${shortCA} 📋
+                  </span>
+                  <span style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">${formatAge(t)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="score-badge-wrap">
+              <div class="score-badge ${scoreClass}">
+                ⚡ ${score}<span style="font-size:10px;opacity:0.7">/100</span>
+              </div>
+              <span class="score-lbl">OPPORTUNITY</span>
+            </div>
+          </div>
+
+          ${t.matchedEvent ? `
+            <div class="match-pill">
+              <span>🎯</span>
+              <span>Matched: <strong>${escapeHtml(t.matchedEvent.title.slice(0, 48))}...</strong></span>
+            </div>
+          ` : ''}
+
+          <div class="metrics-grid">
+            <div class="metric-cell">
+              <span class="metric-title">Price</span>
+              <span class="metric-value text-green">${formatPrice(t.priceUsd)}</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-title">Liquidity</span>
+              <span class="metric-value text-cyan">${t.liquidityUsd ? '$' + formatNumber(t.liquidityUsd) : 'UNKNOWN'}</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-title">Market Cap</span>
+              <span class="metric-value">${t.marketCap ? '$' + formatNumber(t.marketCap) : 'UNKNOWN'}</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-title">1H Volume</span>
+              <span class="metric-value">${t.volume1h ? '$' + formatNumber(t.volume1h) : (t.volume24h ? '$' + formatNumber(t.volume24h) : 'UNKNOWN')}</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-title">5M Volume</span>
+              <span class="metric-value">${t.volume5m ? '$' + formatNumber(t.volume5m) : 'UNKNOWN'}</span>
+            </div>
+            <div class="metric-cell">
+              <span class="metric-title">Buys / Sells</span>
+              <span class="metric-value"><span class="text-green">${buys}</span> / <span class="text-rose">${sells}</span></span>
+            </div>
+          </div>
+
+          <div class="breakdown-box">
+            <div class="bar-row">
+              <span>Viral Event Match (25):</span>
+              <div class="bar-track"><div class="bar-fill" style="width:${(t.scores?.viralRelevance || 0) / 25 * 100}%"></div></div>
+              <span>${t.scores?.viralRelevance || 0}</span>
+            </div>
+            <div class="bar-row">
+              <span>Narrative Sim (25):</span>
+              <div class="bar-track"><div class="bar-fill" style="width:${(t.scores?.narrativeMatch || 0) / 25 * 100}%"></div></div>
+              <span>${t.scores?.narrativeMatch || 0}</span>
+            </div>
+            <div class="bar-row">
+              <span>Token Age (15):</span>
+              <div class="bar-track"><div class="bar-fill" style="width:${(t.scores?.age || 0) / 15 * 100}%"></div></div>
+              <span>${t.scores?.age || 0}</span>
+            </div>
+            <div class="bar-row">
+              <span>Vol Momentum (15):</span>
+              <div class="bar-track"><div class="bar-fill" style="width:${(t.scores?.volumeAccel || 0) / 15 * 100}%"></div></div>
+              <span>${t.scores?.volumeAccel || 0}</span>
+            </div>
+          </div>
+
+          <div class="risk-tags">
+            ${(t.riskFlags && t.riskFlags.length > 0) 
+              ? t.riskFlags.map(rf => `<span class="risk-badge ${rf.type}">⚠️ ${escapeHtml(rf.label)}</span>`).join('')
+              : '<span class="risk-badge safe">✓ Standard Parameters</span>'
+            }
+          </div>
+
+          <div class="card-actions">
+            <a href="https://axiom.trade/t/${t.tokenAddress}" target="_blank" rel="noopener noreferrer" class="btn btn-axiom">
+              ⚡ Axiom
+            </a>
+            
+            <a href="${t.dexUrl || ('https://dexscreener.com/solana/' + t.tokenAddress)}" target="_blank" rel="noopener noreferrer" class="btn btn-dex">
+              DexScreener ↗
+            </a>
+
+            <button class="btn btn-icon" onclick="openTokenModal('${t.tokenAddress}')" title="Inspect Intelligence Score">
+              🔍
+            </button>
+
+            <button class="btn btn-icon" onclick="toggleWatchlist('${t.tokenAddress}')" title="Save to Watchlist">
+              ${isWatch ? '★' : '☆'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderViralEvents() {
+      const container = document.getElementById('viralList');
+      if (!STATE.viralEvents.length) {
+        container.innerHTML = `<div class="empty-state">No current viral events detected. Click SCAN NOW to pull from GDELT.</div>`;
+        return;
+      }
+
+      container.innerHTML = STATE.viralEvents.map(ev => {
+        const timeAgo = Math.max(1, Math.round((Date.now() - ev.timestamp) / 60000));
+        const timeStr = timeAgo < 60 ? `${timeAgo}m ago` : `${Math.round(timeAgo/60)}h ago`;
+
+        return `
+          <div class="event-card">
+            <div class="event-header">
+              <a href="${escapeHtml(ev.url)}" target="_blank" rel="noopener noreferrer" class="event-title">
+                ${escapeHtml(ev.title)} ↗
+              </a>
+              <span class="event-src">${escapeHtml(ev.domain)}</span>
+            </div>
+            <div class="event-meta">
+              <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${timeStr}</span>
+              ${ev.keywords.map(kw => `<span class="keyword-pill">${escapeHtml(kw)}</span>`).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderInfluencers() {
+      const container = document.getElementById('influencerGrid');
+      const influencers = STATE.config.influencers;
+
+      container.innerHTML = influencers.map(name => {
+        const mentions = STATE.viralEvents.filter(ev => 
+          ev.title.toLowerCase().includes(name.toLowerCase()) || 
+          ev.keywords.some(k => k.toLowerCase() === name.toLowerCase())
+        );
+
+        return `
+          <div class="influencer-card">
+            <div class="inf-top">
+              <div class="inf-name">
+                <span>👤</span>
+                <strong>${escapeHtml(name)}</strong>
+              </div>
+              <span class="tab-badge" style="background:rgba(187,134,252,0.15); color:#bb86fc;">
+                ${mentions.length} Mentions
+              </span>
+            </div>
+            ${mentions.length > 0 ? `
+              <div class="inf-news-preview">
+                <strong>Latest:</strong> ${escapeHtml(mentions[0].title)}
+                <div style="font-size:10px; color:var(--text-muted); margin-top:4px;">
+                  Source: ${escapeHtml(mentions[0].domain)}
+                </div>
+              </div>
+            ` : `
+              <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
+                No recent headline anomalies detected in current news window.
+              </div>
+            `}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openTokenModal(addr) {
+      const token = STATE.tokens.get(addr);
+      if (!token) {
+        logTerminal(`Modal lookup: token ${addr.slice(0, 6)} not currently loaded.`, 'warn');
+        return;
+      }
+
+      const modal = document.getElementById('tokenModal');
+      const title = document.getElementById('modalTokenTitle');
+      const body = document.getElementById('modalBody');
+
+      title.innerHTML = `
+        <span>⚡ ${escapeHtml(token.name || 'Token Details')} ($${escapeHtml(token.symbol || 'MEME')})</span>
+        <span class="score-badge ${token.scores?.total >= 60 ? 'score-high' : 'score-mid'}" style="font-size:13px;">
+          ${token.scores?.total || 0}/100
+        </span>
+      `;
+
+      body.innerHTML = `
+        <div style="display:flex; flex-direction:column; gap:14px; font-family:var(--font-mono); font-size:12px;">
+          
+          <div style="background:var(--bg-surface-elevated); padding:10px; border-radius:var(--radius-sm); word-break:break-all;">
+            <div style="color:var(--text-muted); font-size:10px;">SOLANA CONTRACT ADDRESS:</div>
+            <div style="color:var(--accent-cyan); font-weight:700; cursor:pointer;" onclick="copyToClipboard('${token.tokenAddress}')">
+              ${token.tokenAddress} 📋
+            </div>
+          </div>
+
+          ${token.matchedEvent ? `
+            <div class="match-pill" style="border-color:var(--accent-cyan);">
+              <span>🎯</span>
+              <div>
+                <strong>Matched Viral Catalyst:</strong><br>
+                ${escapeHtml(token.matchedEvent.title)}
+                <div style="font-size:10px; color:var(--text-muted); margin-top:3px;">Source: ${escapeHtml(token.matchedEvent.domain)}</div>
+              </div>
+            </div>
+          ` : ''}
+
+          <div>
+            <div style="font-weight:700; color:var(--text-primary); margin-bottom:8px;">INTELLIGENCE SCORE AUDIT (0 - 100)</div>
+            <div class="breakdown-box" style="font-size:11px; padding:12px; gap:8px;">
+              <div class="bar-row">
+                <span>Viral Event Relevance (25 pts):</span>
+                <span><strong>${token.scores?.viralRelevance || 0}</strong> / 25</span>
+              </div>
+              <div class="bar-row">
+                <span>Token & Narrative Match (25 pts):</span>
+                <span><strong>${token.scores?.narrativeMatch || 0}</strong> / 25</span>
+              </div>
+              <div class="bar-row">
+                <span>Token Age / Early Discovery (15 pts):</span>
+                <span><strong>${token.scores?.age || 0}</strong> / 15 (${formatAge(token)})</span>
+              </div>
+              <div class="bar-row">
+                <span>Volume Acceleration (15 pts):</span>
+                <span><strong>${token.scores?.volumeAccel || 0}</strong> / 15</span>
+              </div>
+              <div class="bar-row">
+                <span>Liquidity Quality (10 pts):</span>
+                <span><strong>${token.scores?.liquidity || 0}</strong> / 10</span>
+              </div>
+              <div class="bar-row">
+                <span>Buy / Sell Ratio (10 pts):</span>
+                <span><strong>${token.scores?.buySell || 0}</strong> / 10</span>
+              </div>
+            </div>
+          </div>
+
+          ${token.description ? `
+            <div style="background:var(--bg-card); padding:10px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+              <div style="color:var(--text-muted); font-size:10px;">TOKEN METADATA:</div>
+              <div style="color:var(--text-secondary); font-size:11px; margin-top:4px;">${escapeHtml(token.description)}</div>
+            </div>
+          ` : ''}
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:8px;">
+            <a href="https://axiom.trade/t/${token.tokenAddress}" target="_blank" rel="noopener noreferrer" class="btn btn-axiom" style="padding:10px; font-size:12px;">
+              ⚡ Open on Axiom
+            </a>
+            <a href="${token.dexUrl || ('https://dexscreener.com/solana/' + token.tokenAddress)}" target="_blank" rel="noopener noreferrer" class="btn btn-dex" style="padding:10px; font-size:12px;">
+              DexScreener Terminal ↗
+            </a>
+          </div>
+
+        </div>
+      `;
+
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('tokenModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    document.getElementById('tokenModal').addEventListener('click', (e) => {
+      if (e.target.id === 'tokenModal') closeModal();
+    });
+
+    function toggleWatchlist(addr) {
+      if (STATE.watchlist.has(addr)) {
+        STATE.watchlist.delete(addr);
+        logTerminal(`Removed ${addr.slice(0,6)} from Watchlist`, 'info');
+      } else {
+        STATE.watchlist.add(addr);
+        logTerminal(`Added ${addr.slice(0,6)} to Watchlist`, 'info');
+      }
+      localStorage.setItem(LS_WATCH_KEY, JSON.stringify(Array.from(STATE.watchlist)));
+      renderAllViews();
+    }
+
+    function updateWatchlistBadge() {
+      document.getElementById('badgeWatch').textContent = STATE.watchlist.size;
+    }
+
+    document.getElementById('btnClearWatchlist').addEventListener('click', () => {
+      if (confirm('Clear all saved watchlist tokens?')) {
+        STATE.watchlist.clear();
+        localStorage.setItem(LS_WATCH_KEY, JSON.stringify([]));
+        renderAllViews();
+      }
+    });
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          logTerminal(`Copied CA to clipboard: ${text}`, 'info');
+          alert(`Token CA copied:\n${text}`);
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert(`Token CA copied:\n${text}`);
+      }
+    }
+
+    // --- UI Listeners ---
+    document.getElementById('btnScanNow').addEventListener('click', () => {
+      runFullScan();
+    });
+
+    document.getElementById('btnSoundToggle').addEventListener('click', () => {
+      STATE.config.audioEnabled = !STATE.config.audioEnabled;
+      STATE.config.notifSound = STATE.config.audioEnabled;
+      updateSoundIcon();
+      if (STATE.config.audioEnabled) {
+        playRadarBeep('highScore');
+      }
+      saveSettings();
+    });
+
+    document.getElementById('btnArmNotifications').addEventListener('click', requestDesktopNotificationPermission);
+    document.getElementById('btnRequestPermission').addEventListener('click', requestDesktopNotificationPermission);
+    document.getElementById('btnTestNotification').addEventListener('click', fireTestNotification);
+
+    document.getElementById('cfgNotifMinScore').addEventListener('input', (e) => {
+      document.getElementById('lblMinScoreVal').textContent = `${e.target.value} / 100`;
+    });
+
+    document.getElementById('btnSaveConfig').addEventListener('click', saveSettings);
+    document.getElementById('btnSaveKeywords').addEventListener('click', saveKeywords);
+
+    [
+      'cfgNotifEnabled',
+      'cfgNotifMinScore',
+      'cfgNotifMinLiquidity',
+      'cfgNotifViral',
+      'cfgNotifNewTokens',
+      'cfgNotifVolumeSurge',
+      'cfgNotifSound'
+    ].forEach(id => {
+      document.getElementById(id).addEventListener('change', saveSettings);
+    });
+
+    // --- Boot Sequence ---
+    window.addEventListener('DOMContentLoaded', () => {
+      loadPersistedData();
+      initServiceWorker();
+      logTerminal('Terminal initialized. Loading initial intelligence streams...', 'info');
+      runFullScan();
+      startTimerLoop();
+    });
+  </script>
+</body>
+</html>
